@@ -21,8 +21,9 @@
 int tailPin = 9;    // LED connected to digital pin 9
 int bodyPin = 8;    // body connected to digital pin 8
 int mouthPin = 7;    // mouth connected to digital pin 7
-int AudioPin = A0;
-
+int AudioPin = A0;   // Connected to Audio for sampling
+int quietThreshold = 3;  // Threshold for triggering mouth
+  
 String inputString = "";         // a String to hold incoming data
 bool stringComplete = false;  // whether the string is complete
 bool TailIsUp = false;
@@ -58,6 +59,8 @@ void setup() {
 
     pinMode(mouthPin, OUTPUT);
   digitalWrite(mouthPin, LOW);
+
+    pinMode(AudioPin, INPUT);
 }
 
 
@@ -171,8 +174,10 @@ void handleMouth() {
   if (talkingNow == true)
   {
     int sensorVal = analogRead(AudioPin);
-    sensorVal = map(sensorVal,0,512,0,180);
-    if (sensorVal > 10)
+    Serial.print("sensorVal: ");
+    Serial.println(sensorVal);
+
+    if (sensorVal > quietThreshold)
     {
       digitalWrite(mouthPin, HIGH);
     }
